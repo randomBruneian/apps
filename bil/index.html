@@ -150,7 +150,7 @@ textarea{width:100%;min-height:110px;font:14px ui-monospace,monospace;color:var(
 <section class="band" style="padding-top:0">
   <details><summary data-t="backup"></summary>
     <p class="meta" data-t="backupHelp"></p>
-    <button class="b ghost" id="copyBtn" data-t="copy"></button>
+    <div class="tools"><button class="b ghost" id="dlBtn" data-t="download"></button><label class="b ghost" style="display:inline-flex;align-items:center;cursor:pointer"><span data-t="fromFile"></span><input id="fileIn" type="file" accept=".json,application/json,text/plain" hidden></label><button class="b ghost" id="copyBtn" data-t="copy"></button></div>
     <p><textarea id="imp" aria-label="JSON"></textarea></p>
     <button class="b ghost" id="impBtn" data-t="restore"></button>
   </details>
@@ -189,8 +189,8 @@ upcoming:'Akan datang · 30 hari',none:'Tiada bayaran dalam 30 hari akan datang.
 paid:'Dah bayar',today:'Hari ini',tomorrow:'Esok',inDays:n=>n+' hari lagi',late:n=>'Lewat '+n+' hari',next:'Seterusnya',
 storageWarn:'Data tidak dapat disimpan dalam pelayar ini. Salin sandaran sebelum menutup.',emptyList:'Tiada item. Tekan + Tambah.',
 sampleNote:'Ini data contoh. Ubah atau padam ikut keperluan.',clearSample:'Kosongkan contoh',
-backup:'Sandaran data',backupHelp:'Salin data untuk disimpan (cth. di WhatsApp atau Notes). Tampal semula untuk pulihkan di telefon lain.',
-copy:'Salin data',copied:'Data disalin',restore:'Pulihkan dari teks',importBad:'Data tidak sah',importOk:'Data dipulihkan',
+backup:'Sandaran data',backupHelp:'Muat turun fail sandaran dan simpan di tempat selamat (Files, Google Drive, WhatsApp). Pulihkan dari fail itu di telefon lain. Anda juga boleh salin data sebagai teks.',
+copy:'Salin data',download:'Muat turun fail sandaran',fromFile:'Pulihkan dari fail',dlDone:'Fail sandaran disimpan',copied:'Data disalin',restore:'Pulihkan dari teks',importBad:'Data tidak sah',importOk:'Data dipulihkan',
 presets:'Pilihan pantas',fName:'Nama',fAmt:'Jumlah (B$)',fCat:'Jenis',fCycle:'Kekerapan',fDue:'Tarikh bayar seterusnya',fNote:'Nota (cth. kad, akaun)',fActive:'Aktif',
 save:'Simpan',cancel:'Batal',del:'Padam',delSure:'Tekan lagi untuk padam',newItem:'Item baru',editItem:'Ubah item',
 paidToast:d=>'Dah bayar. Seterusnya '+d,doneToast:'Ditanda selesai',delToast:'Item dipadam',savedToast:'Disimpan',undo:'Buat asal',pausedL:'Dihentikan',spent:'Total perbelanjaan',spentHelp:'Dikira daripada setiap kali anda tekan Dah bayar.',thisYear:y=>'Tahun '+y+': ',noSpend:'Belum ada bayaran direkod bulan ini.',
@@ -202,8 +202,8 @@ upcoming:'Coming up · 30 days',none:'Nothing due in the next 30 days.',allItems
 paid:'Paid',today:'Today',tomorrow:'Tomorrow',inDays:n=>'in '+n+' days',late:n=>n+(n==1?' day':' days')+' late',next:'Next',
 storageWarn:"Data can't be saved in this browser. Copy a backup before closing.",emptyList:'No items. Tap + Add.',
 sampleNote:'This is sample data. Edit or delete as you like.',clearSample:'Clear samples',
-backup:'Backup',backupHelp:'Copy your data to keep it somewhere safe (WhatsApp, Notes). Paste it back to restore on another phone.',
-copy:'Copy data',copied:'Data copied',restore:'Restore from text',importBad:'That data is not valid',importOk:'Data restored',
+backup:'Backup',backupHelp:'Download a backup file and keep it somewhere safe (Files, Google Drive, WhatsApp). Restore from that file on another phone. You can also copy your data as text.',
+copy:'Copy data',download:'Download backup file',fromFile:'Restore from file',dlDone:'Backup file saved',copied:'Data copied',restore:'Restore from text',importBad:'That data is not valid',importOk:'Data restored',
 presets:'Quick picks',fName:'Name',fAmt:'Amount (B$)',fCat:'Type',fCycle:'How often',fDue:'Next payment date',fNote:'Note (e.g. card, account)',fActive:'Active',
 save:'Save',cancel:'Cancel',del:'Delete',delSure:'Tap again to delete',newItem:'New item',editItem:'Edit item',
 paidToast:d=>'Paid. Next due '+d,doneToast:'Marked done',delToast:'Item deleted',savedToast:'Saved',undo:'Undo',pausedL:'Paused',spent:'Total spending',spentHelp:'Counted from each time you tap Paid.',thisYear:y=>'Year '+y+': ',noSpend:'No payments recorded this month.',
@@ -344,11 +344,16 @@ $('clearSamp').onclick=()=>{const prev=snap();items=items.filter(i=>!i.sample);r
 const setLang=l=>{lang=l;texts();render()};
 $('lms').onclick=()=>setLang('ms');$('len').onclick=()=>setLang('en');
 $('copyBtn').onclick=async()=>{const s=JSON.stringify({items,log});$('imp').value=s;try{await navigator.clipboard.writeText(s);toast(t('copied'))}catch(e){$('imp').select()}};
-$('impBtn').onclick=()=>{try{const d=JSON.parse($('imp').value);const a=Array.isArray(d)?d:d.items;
+function doImport(txt){try{const d=JSON.parse(txt);const a=Array.isArray(d)?d:d.items;
  if(!Array.isArray(a)||!a.every(i=>i&&typeof i.name==='string'&&typeof i.amt==='number'&&PER[i.cycle]!==undefined&&COL[i.cat]&&/^\d{4}-\d\d-\d\d$/.test(i.due)))throw 0;
  const prev=snap();items=a.map(i=>({id:i.id||uid(),name:i.name,amt:i.amt,cat:i.cat,cycle:i.cycle,due:i.due,anchor:i.anchor||parse(i.due).getDate(),note:i.note||'',active:i.active!==false,sample:!!i.sample}));
  log=Array.isArray(d.log)?d.log.filter(e=>e&&typeof e.amt==='number'&&/^\d{4}-\d\d-\d\d$/.test(e.date)&&typeof e.name==='string').map(e=>({id:e.id||uid(),item:e.item||'',name:e.name,cat:COL[e.cat]?e.cat:'other',amt:e.amt,date:e.date})):[];
- render();toast(t('importOk'),()=>restore(prev))}catch(e){toast(t('importBad'))}};
+ render();toast(t('importOk'),()=>restore(prev))}catch(e){toast(t('importBad'))}}
+$('impBtn').onclick=()=>doImport($('imp').value);
+$('fileIn').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(doImport,()=>toast(t('importBad')));e.target.value=''};
+$('dlBtn').onclick=()=>{try{const b=new Blob([JSON.stringify({app:'bil',saved:iso(todayD()),items,log},null,1)],{type:'application/json'});
+ const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='bil-sandaran-'+iso(todayD())+'.json';document.body.appendChild(a);a.click();
+ setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);toast(t('dlDone'))}catch(e){toast(t('importBad'))}};
 new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);
 texts();render();

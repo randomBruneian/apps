@@ -35,6 +35,18 @@ A quiet wall clock for Bandar Seri Begawan. It has rolling seconds, the moon pha
 
 Tap **Keep screen on** to use it as a desk or bedside clock.
 
+## Bil & Langganan
+
+Track subscriptions, bills, fees, takaful and instalments in B$, in Bahasa Melayu or English.
+
+**Open:** https://michelanjelou-droid.github.io/apps/bil/
+
+- Monthly and yearly totals, split by type
+- What's due in the next 30 days; tap **Dah bayar** to move it to the next due date
+- Total spending per month, counted from each payment you mark as paid
+- Quick picks for common services (Netflix, Astro, imagine, DST, Progresif, cukai jalan and more)
+- Your data stays on your own phone. Use **Sandaran data** to copy a backup.
+
 ## Add to your Home Screen
 
 **iPhone:** open the link in Safari, tap Share, then tap **Add to Home Screen**.

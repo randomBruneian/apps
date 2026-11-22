@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#4A1838">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Raja Sehari">
+<title>Raja Sehari Planner</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Mulish:wght@400;600;700&display=swap">
+<style>
+/* VOICE: warm, ceremonial, practical — a Brunei family planning a majlis
+   IDEA: a berian tray card edged with a songket band
+   PICTURE: the countdown to the akad nikah on deep plum, gold songket band below
+   COLOUR and TYPE: plum, gold, leaf green; Marcellus + Mulish
+   LAYOUT: hero, sticky tabs, one calm column of panels */
+:root{
+  --bg:#FAF5F7; --surface:#FFFFFF; --ink:#33142B; --muted:#7D6474; --line:#EADCE3;
+  --plum:#4A1838; --gold:#B8892B; --goldsoft:#F3E6C8; --leaf:#3D6B4E; --leafsoft:#DDEBE1; --warn:#A8452F;
+  --onplum:#FBEFD8;
+  --display:"Marcellus","Palatino Linotype",Georgia,serif;
+  --body:"Mulish",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#170D14; --surface:#22141E; --ink:#F4E8EE; --muted:#B79FAE; --line:#3A2433;
+  --plum:#3A1230; --gold:#D9B25A; --goldsoft:#3B2F18; --leaf:#7DB592; --leafsoft:#1E3127; --warn:#E08A72; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#170D14; --surface:#22141E; --ink:#F4E8EE; --muted:#B79FAE; --line:#3A2433;
+  --plum:#3A1230; --gold:#D9B25A; --goldsoft:#3B2F18; --leaf:#7DB592; --leafsoft:#1E3127; --warn:#E08A72; color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;overflow-x:clip}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--plum)}
+.wrap{max-width:720px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.hero{background:var(--plum);color:var(--onplum);padding-top:env(safe-area-inset-top,0px)}
+header .wrap{padding-block:20px 18px;display:grid;gap:4px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.eyebrow{font-size:13px;opacity:.8}
+.lang{display:flex;border:1px solid color-mix(in srgb,var(--onplum) 35%,transparent);border-radius:99px;overflow:hidden}
+.lang button{background:none;border:0;color:var(--onplum);font:600 13px var(--body);padding:8px 13px;min-height:36px;cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--gold);color:#2A0E20}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(28px,8vw,40px);line-height:1.1;margin:6px 0 0;text-wrap:balance}
+h1 .amp{color:var(--gold)}
+.when{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:6px}
+.days{font-family:var(--display);font-size:48px;line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
+.when small{opacity:.85;font-size:14px}
+.band{height:12px;background:
+ linear-gradient(135deg,var(--plum) 50%,transparent 50%) 0 0/14px 12px,
+ linear-gradient(225deg,var(--plum) 50%,transparent 50%) 0 0/14px 12px,var(--gold)}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+nav.tabs .wrap{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;padding-block:8px}
+nav.tabs button{flex:none;background:none;border:0;border-radius:99px;padding:8px 14px;min-height:40px;font:600 14px var(--body);color:var(--muted);cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:var(--plum);color:var(--onplum)}
+:root[data-theme="dark"] nav.tabs button[aria-selected="true"]{background:var(--gold);color:#2A0E20}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) nav.tabs button[aria-selected="true"]{background:var(--gold);color:#2A0E20}}
+main .wrap{padding-block:18px 48px;display:grid;gap:18px}
+.note{background:var(--goldsoft);border-radius:10px;padding:10px 12px;font-size:14px;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+h2{font-family:var(--display);font-weight:400;font-size:22px;margin:0}
+h3{font-size:14px;color:var(--muted);margin:0 0 6px;font-weight:700}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.stat b{display:block;font-family:var(--display);font-weight:400;font-size:24px;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--muted)}
+.bar{height:6px;background:var(--line);border-radius:9px;overflow:hidden;margin-top:8px}
+.bar i{display:block;height:100%;background:var(--gold);border-radius:9px}
+.bar i.over{background:var(--warn)}
+.list{display:grid}
+.row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0}
+.row .grow{flex:1;overflow-wrap:anywhere}
+.row.done .grow{color:var(--muted);text-decoration:line-through}
+.chk{width:28px;height:28px;flex:none;border-radius:50%;border:2px solid var(--gold);background:none;cursor:pointer;display:grid;place-items:center;color:transparent;font-size:14px}
+.chk[aria-pressed="true"]{background:var(--leaf);border-color:var(--leaf);color:#fff}
+.pill{flex:none;font-size:12px;font-weight:700;border-radius:99px;padding:6px 10px;min-height:32px;border:0;cursor:pointer;font-family:var(--body)}
+.p0{background:var(--line);color:var(--muted)} .p1{background:var(--goldsoft);color:var(--ink)} .p2{background:var(--leafsoft);color:var(--leaf)} .p3{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.side{flex:none;font-size:12px;font-weight:700;color:var(--muted);width:20px;text-align:center}
+.x{flex:none;background:none;border:0;color:var(--muted);font-size:20px;cursor:pointer;min-width:32px;min-height:32px;line-height:1}
+.x:hover{color:var(--warn)}
+input,select{font:16px var(--body);color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.num{width:96px;text-align:right;font-variant-numeric:tabular-nums}
+.add{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.add input[type=text]{flex:1 1 160px}
+.btn{font:700 14px var(--body);border-radius:8px;padding:10px 14px;min-height:44px;border:0;background:var(--plum);color:var(--onplum);cursor:pointer;display:inline-flex;align-items:center}
+:root[data-theme="dark"] .btn{background:var(--gold);color:#2A0E20}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{background:var(--gold);color:#2A0E20}}
+.btn.ghost{background:none;color:var(--ink);border:1px solid var(--line)}
+.phase{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px;gap:8px}
+.phase small{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.fields{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.fields label{display:grid;gap:4px;font-size:13px;color:var(--muted);font-weight:600}
+.fields .full{grid-column:1/-1}
+.tot{display:flex;justify-content:space-between;gap:8px;font-weight:700;padding-top:10px;border-top:2px solid var(--ink);margin-top:4px;font-variant-numeric:tabular-nums}
+.money{font-variant-numeric:tabular-nums;white-space:nowrap}
+.muted{color:var(--muted);font-size:14px}
+.confirm{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+@media (max-width:420px){.stats{grid-template-columns:1fr 1fr}.stats .stat:last-child{grid-column:1/-1}.num{width:80px}.fields{grid-template-columns:minmax(0,1fr)}}
+@media (prefers-reduced-motion:no-preference){.bar i{transition:width .4s}}
+.dashbtn{width:100%;justify-content:center;font-size:16px;min-height:52px;border-radius:12px}
+.overlay{position:fixed;inset:0;z-index:50;background:#fff;overflow:auto;color-scheme:light}
+.overlay[hidden]{display:none}
+.otools{position:sticky;top:0;z-index:2;background:#4A1838;display:flex;gap:8px;justify-content:space-between;align-items:center;padding:calc(10px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 10px max(16px,env(safe-area-inset-left,0px))}
+.otools .btn{background:#B8892B!important;color:#2A0E20!important}
+.otools .btn.ghost{background:none!important;color:#FBEFD8!important;border-color:rgba(251,239,216,.4)}
+.dash{--ink:#33142B;--mute:#6E5664;--line:#EADCE3;--plum:#4A1838;--gold:#B8892B;--green:#2E7D4F;--red:#A8452F;--grey:#D9CED4;background:#fff;color:var(--ink);font:15px/1.5 Mulish,system-ui,sans-serif;max-width:980px;margin:0 auto;padding:20px max(16px,4vw) 40px}
+.dash *{box-sizing:border-box;min-width:0}
+.dash .dh{border-bottom:3px solid var(--gold);padding-bottom:14px;margin-bottom:16px}
+.dash .dk{font-size:13px;color:var(--mute)}
+.dash h1{font:400 clamp(28px,6vw,40px)/1.1 Marcellus,Georgia,serif;margin:4px 0 6px;color:var(--plum)}
+.dash h1 span{color:var(--gold)}
+.dash .meta{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:14px;color:var(--mute)}
+.dash .meta b{color:var(--ink)}
+.dash .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.dash .kpi{border:1px solid var(--line);border-radius:12px;padding:12px}
+.dash .kpi b{display:block;font:400 30px/1.1 Marcellus,Georgia,serif;font-variant-numeric:tabular-nums}
+.dash .kpi span{font-size:13px;color:var(--mute)}
+.dash .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.dash section{border:1px solid var(--line);border-radius:14px;padding:14px}
+.dash section.wide{grid-column:1/-1}
+.dash h2{font:400 20px/1.2 Marcellus,Georgia,serif;margin:0 0 4px}
+.dash .sub{font-size:13px;color:var(--mute);margin:0 0 10px}
+.dash .br{display:grid;grid-template-columns:minmax(0,9em) minmax(0,1fr) auto;gap:10px;align-items:center;padding:5px 0;font-size:14px}
+.dash .br>span:first-child{overflow-wrap:anywhere;line-height:1.25}
+.dash .tr{height:14px;background:transparent;border:1.5px solid var(--grey);border-radius:4px;position:relative;overflow:hidden}
+.dash .tr i{position:absolute;left:0;top:0;bottom:0;background:var(--gold);border-radius:0 4px 4px 0}
+.dash .tr i.over{background:var(--red)}
+.dash .pl{height:12px;border-radius:4px;background:var(--grey);overflow:hidden}
+.dash .pl i{display:block;height:100%;background:var(--green);border-radius:0 4px 4px 0}
+.dash .stk{display:flex;gap:2px;height:16px}
+.dash .stk i{display:block;height:100%}
+.dash .stk i:first-child{border-radius:4px 0 0 4px}.dash .stk i:last-child{border-radius:0 4px 4px 0}.dash .stk i:only-child{border-radius:4px}
+.dash .v{font-size:13px;color:var(--mute);white-space:nowrap;text-align:right;font-variant-numeric:tabular-nums}
+.dash .lg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px;color:var(--mute);margin-bottom:8px}
+.dash .lg i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.dash ol{margin:0;padding-left:20px}.dash li{padding:3px 0}
+.dash .ft{font-size:12px;color:var(--mute);margin-top:18px;text-align:center}
+@media(max-width:700px){.dash .grid{grid-template-columns:minmax(0,1fr)}.dash .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.dash .br{grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;padding:7px 0}.dash .br>span:first-child{grid-column:1;grid-row:1}.dash .br>.v{grid-column:2;grid-row:1}.dash .br>div{grid-column:1/-1;grid-row:2}}
+@media print{.otools{display:none}.dash section{break-inside:avoid}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <div class="topline">
+      <span class="eyebrow" id="eyebrow"></span>
+      <div class="lang" role="group" aria-label="Bahasa / Language">
+        <button id="lang-bm" data-lang="bm">BM</button><button id="lang-en" data-lang="en">EN</button>
+      </div>
+    </div>
+    <h1 id="couple"></h1>
+    <div class="when"><span class="days" id="days"></span><small id="dayslabel"></small></div>
+  </div>
+  <div class="band" aria-hidden="true"></div>
+</header>
+<nav class="tabs"><div class="wrap" role="tablist" id="tabs"></div></nav>
+<main><div class="wrap" id="view"></div></main>
+<div class="overlay" id="overlay" hidden role="dialog" aria-modal="true" aria-label="Dashboard"><div class="otools"><button class="btn ghost" data-act="closedash" id="dashClose"></button><button class="btn" data-act="dldash" id="dashDl"></button></div><div id="dashBody"></div></div>
+
+<script>
+{
+const KEY="raja-sehari-bn-v1";
+const uid=()=>Math.random().toString(36).slice(2,9);
+const T={
+ bm:{eyebrow:"Perancang Majlis Kahwin Brunei",tabs:["Ringkasan","Persiapan","Bajet","Berian","Tetamu"],
+  daysTo:"hari lagi ke akad nikah",today:"Hari ini hari bahagia awda!",past:"Selamat pengantin baru",nodate:"Tetapkan tarikh akad nikah",
+  sample:"Ini contoh data. Padam untuk mula merancang majlis awda sendiri.",clear:"Padam contoh",sure:"Padam semua data?",yes:"Ya, padam",no:"Batal",
+  tasks:"Persiapan siap",budget:"Bajet digunakan",guests:"Tetamu sahkan",details:"Butiran majlis",bride:"Nama pengantin perempuan",groom:"Nama pengantin lelaki",date:"Tarikh akad nikah",venue:"Tempat bersanding",kadi:"Kadi / jurunikah yang dilantik",kadiTel:"No. telefon kadi",call:"Telefon",copy:"Salin nombor",copied:"Nombor disalin.",next:"Persiapan seterusnya",allDone:"Semua persiapan siap. Tahniah!",
+  addTask:"Tambah persiapan",add:"Tambah",phase:"Peringkat",
+  adat:"Adat berbeza mengikut daerah dan keluarga. Contohnya, malam berinai (berpacar) lebih biasa di Daerah Brunei-Muara. Tambah atau padam persiapan ikut adat keluarga awda.",
+  total:"Jumlah bajet",plan:"Rancang",actual:"Sebenar",item:"Perkara",sum:"Jumlah",left:"Baki",over:"Lebih bajet",addItem:"Tambah perkara",
+  fromM:"Dulang berian · pihak lelaki",fromF:"Balasan · pihak perempuan",trays:"dulang",st:["Rancang","Beli","Siap"],cost:"Kos",
+  berianNote:"Berian ialah barang-barang yang dipinta semasa bertunang, dihantar dalam dulang semasa majlis menghantar berian. Pihak perempuan boleh membalas jika mahu.",
+  gName:"Nama tetamu / keluarga",pax:"Org",sideL:"L",sideP:"P",sideLf:"Pihak lelaki",sidePf:"Pihak perempuan",rsvp:["Belum","Hadir","Tidak"],
+  confirmed:"hadir",pending:"belum jawab",heads:"orang dijangka",reset:"Mula semula",of:"daripada",
+  backup:"Sandaran data",backupHelp:"Muat turun fail sandaran dan simpan di tempat selamat (Files, Google Drive atau WhatsApp). Pulihkan dari fail itu di telefon lain.",
+  download:"Muat turun fail sandaran",genDash:"Jana dashboard",close:"Tutup",dlDash:"Muat turun dashboard",dashTitle:"Dashboard Majlis",generated:"Dijana",dDone:"siap",guestsExp:"Tetamu dijangka",berianReady:"Dulang berian siap",byItem:"Bajet ikut perkara",byItemSub:"Bar emas = sudah dibelanjakan; bingkai = jumlah dirancang.",byPhase:"Persiapan ikut peringkat",bySide:"Tetamu ikut pihak",berianSt:"Status berian",nextUp:"Persiapan seterusnya",footer:"Dijana oleh Raja Sehari Planner",daysLeft:"hari lagi",kadiL:"Kadi",venueL:"Tempat",overBy:"lebih",dashSaved:"Dashboard disimpan.",fromFile:"Pulihkan dari fail",dlDone:"Fail sandaran disimpan.",importOk:"Data dipulihkan.",importBad:"Fail tidak sah."},
+ en:{eyebrow:"Brunei Wedding Planner",tabs:["Overview","Preparations","Budget","Berian","Guests"],
+  daysTo:"days to the akad nikah",today:"Today is your big day!",past:"Congratulations to the newlyweds",nodate:"Set your akad nikah date",
+  sample:"This is sample data. Clear it to start planning your own wedding.",clear:"Clear sample",sure:"Clear all data?",yes:"Yes, clear",no:"Cancel",
+  tasks:"Preparations done",budget:"Budget used",guests:"Guests confirmed",details:"Wedding details",bride:"Bride's name",groom:"Groom's name",date:"Akad nikah date",venue:"Bersanding venue",kadi:"Appointed kadi / jurunikah",kadiTel:"Kadi's phone number",call:"Call",copy:"Copy number",copied:"Number copied.",next:"Up next",allDone:"Every preparation is done. Tahniah!",
+  addTask:"Add a preparation",add:"Add",phase:"Stage",
+  adat:"Customs differ by district and family. For example, malam berinai (berpacar) is more common in Brunei-Muara District. Add or remove preparations to match your family's adat.",
+  total:"Total budget",plan:"Planned",actual:"Actual",item:"Item",sum:"Total",left:"Remaining",over:"Over budget",addItem:"Add an item",
+  fromM:"Berian trays · groom's side",fromF:"Return gifts · bride's side",trays:"trays",st:["Planned","Bought","Ready"],cost:"Cost",
+  berianNote:"Berian are the gifts requested at the engagement, delivered on trays at the menghantar berian ceremony. The bride's side may return gifts if they wish.",
+  gName:"Guest / family name",pax:"Pax",sideL:"G",sideP:"B",sideLf:"Groom's side",sidePf:"Bride's side",rsvp:["Pending","Coming","Declined"],
+  confirmed:"coming",pending:"not replied",heads:"people expected",reset:"Start over",of:"of",
+  backup:"Backup",backupHelp:"Download a backup file and keep it somewhere safe (Files, Google Drive or WhatsApp). Restore from that file on another phone.",
+  download:"Download backup file",genDash:"Generate dashboard",close:"Close",dlDash:"Download dashboard",dashTitle:"Wedding Dashboard",generated:"Generated",dDone:"done",guestsExp:"Guests expected",berianReady:"Berian trays ready",byItem:"Budget by item",byItemSub:"Gold bar = spent so far; outline = planned amount.",byPhase:"Preparations by stage",bySide:"Guests by side",berianSt:"Berian status",nextUp:"Up next",footer:"Generated by Raja Sehari Planner",daysLeft:"days to go",kadiL:"Kadi",venueL:"Venue",overBy:"over",dashSaved:"Dashboard saved.",fromFile:"Restore from file",dlDone:"Backup file saved.",importOk:"Data restored.",importBad:"That file is not valid."}
+};
+const PHASES=[
+ ["p12",{bm:"12–9 bulan sebelum",en:"12–9 months before"}],["p6",{bm:"8–6 bulan sebelum",en:"8–6 months before"}],
+ ["p3",{bm:"5–3 bulan sebelum",en:"5–3 months before"}],["p1",{bm:"2–1 bulan sebelum",en:"2–1 months before"}],
+ ["w1",{bm:"Minggu terakhir",en:"Final week"}],["d",{bm:"Hari-hari majlis",en:"Wedding days"}],["after",{bm:"Selepas majlis",en:"After the wedding"}]];
+const t2=(bm,en,extra={})=>({id:uid(),bm,en,...extra});
+function taskTemplate(){return[
+  t2("Bincang dan tetapkan bajet","Agree on a budget",{ph:"p12",done:true}),
+  t2("Berjarum-jarum: ibu bapa berbincang secara tidak rasmi","Berjarum-jarum: parents' informal first talk",{ph:"p12",done:true}),
+  t2("Majlis bertunang: hantar cincin pembuka mulut & cincin tunang","Engagement: bring the pembuka mulut and engagement rings",{ph:"p12",done:true}),
+  t2("Sepakat tarikh nikah dan senarai berian","Agree on the nikah date and the berian list",{ph:"p12",done:true}),
+  t2("Tempah dewan atau khemah","Book the hall or canopy",{ph:"p12",done:true}),
+  t2("Senarai kasar tetamu","Rough guest list",{ph:"p12"}),
+  t2("Daftar & hadiri Kursus Pra-Perkahwinan (Bahagian Khidmat Nasihat Keluarga, JHES)","Register for and attend the Kursus Pra-Perkahwinan (Family Counselling Section, JHES)",{ph:"p6"}),
+  t2("Tempah katering atau atur masak bergotong-royong","Book a caterer or arrange gotong-royong cooking",{ph:"p6"}),
+  t2("Bentuk AJK keluarga untuk majlis","Set up a family AJK (committee) for the majlis",{ph:"p6"}),
+  t2("Tempah jurugambar & video","Book photo & video",{ph:"p6"}),
+  t2("Pilih pengangun / mak andam","Choose the pengangun / mak andam",{ph:"p6"}),
+  t2("Tempah pelamin & dekorasi","Book the pelamin & décor",{ph:"p3"}),
+  t2("Tempah baju nikah & bersanding (kain tenunan Brunei)","Order nikah & bersanding outfits (kain tenunan Brunei)",{ph:"p3"}),
+  t2("Reka & cetak kad jemputan","Design & print invitations",{ph:"p3"}),
+  t2("Pilih buah tangan (doorgift)","Choose the buah tangan (doorgifts)",{ph:"p3"}),
+  t2("Mula siapkan dulang berian","Start preparing the berian trays",{ph:"p3"}),
+  t2("Majlis menghantar berian","Menghantar berian (deliver the berian)",{ph:"p1"}),
+  t2("Semak syarat & lengkapkan dokumen nikah dengan pejabat ugama daerah","Check requirements and complete the nikah documents with the district religious office",{ph:"p1"}),
+  t2("Tetapkan kadi / jurunikah, wali dan dua orang saksi","Confirm the kadi / jurunikah, wali and two witnesses",{ph:"p1"}),
+  t2("Edar kad jemputan","Send out invitations",{ph:"p1"}),
+  t2("Cubaan baju (fitting)","Outfit fitting",{ph:"p1"}),
+  t2("Sahkan RSVP tetamu","Confirm guest RSVPs",{ph:"p1"}),
+  t2("Sahkan semua vendor","Reconfirm every vendor",{ph:"w1"}),
+  t2("Susun tempat duduk keluarga","Seat the family tables",{ph:"w1"}),
+  t2("Rehat dan jaga kesihatan","Rest and look after yourselves",{ph:"w1"}),
+  t2("Berbedak mandi di rumah masing-masing","Berbedak mandi at each family's home",{ph:"d"}),
+  t2("Akad nikah","Akad nikah",{ph:"d"}),
+  t2("Malam berbedak","Malam berbedak",{ph:"d"}),
+  t2("Malam berinai (berpacar)","Malam berinai (berpacar)",{ph:"d"}),
+  t2("Bersanding","Bersanding",{ph:"d"}),
+  t2("Majlis ambil-ambilan","Majlis ambil-ambilan (the families get together)",{ph:"after"}),
+  t2("Muleh tiga hari","Muleh tiga hari (three days at each home)",{ph:"after"}),
+  t2("Pulangkan barang sewaan","Return rented items",{ph:"after"}),
+  t2("Simpan sijil nikah di tempat selamat","Keep the nikah certificate somewhere safe",{ph:"after"}),
+  t2("Ucap terima kasih kepada keluarga & AJK","Thank your family and the AJK",{ph:"after"})
+ ].map(x=>({done:false,...x}))}
+function budgetTemplate(){return[
+  t2("Berian & mas kahwin","Berian & mas kahwin",{plan:6000,actual:6000}),t2("Cincin pembuka mulut & cincin tunang","Pembuka mulut & engagement rings",{plan:1500,actual:1500}),
+  t2("Katering / masak gotong-royong","Catering / gotong-royong cooking",{plan:4500,actual:0}),t2("Dewan / khemah","Hall / canopy",{plan:800,actual:800}),
+  t2("Pelamin & dekorasi","Pelamin & décor",{plan:2500,actual:800}),t2("Baju & kain tenunan","Outfits & kain tenunan",{plan:2000,actual:0}),
+  t2("Pengangun / mak andam","Pengangun / mak andam",{plan:900,actual:0}),t2("Fotografi & video","Photo & video",{plan:1500,actual:500}),
+  t2("Dulang berian & balasan","Berian & return trays",{plan:1200,actual:350}),t2("Malam berbedak & berinai","Malam berbedak & berinai",{plan:600,actual:0}),
+  t2("Kad jemputan & buah tangan","Invitations & buah tangan",{plan:700,actual:0})]}
+function sample(){return{lang:"bm",sample:true,bride:"Nur Aisyah",groom:"Muhammad Haziq",date:"2027-06-12",venue:"Dewan Kampong Mentiri",kadi:"Awg Hj Abdullah bin Hj Ahmad",kadiTel:"+673 8xx xxxx",
+ tasks:taskTemplate(),total:22000,budget:budgetTemplate(),
+ hantaran:[
+  t2("Cincin","Ring",{s:"L",st:2,cost:0}),t2("Barang kemas emas","Gold jewellery",{s:"L",st:1,cost:0}),t2("Kain tenunan Brunei","Kain tenunan Brunei",{s:"L",st:1,cost:280}),
+  t2("Kasut & beg tangan","Shoes & handbag",{s:"L",st:0,cost:0}),t2("Telekung & sejadah","Telekung & prayer mat",{s:"L",st:0,cost:0}),t2("Minyak wangi","Perfume",{s:"L",st:0,cost:0}),
+  t2("Kek & coklat","Cake & chocolates",{s:"L",st:0,cost:0}),
+  t2("Kain samping tenunan & songkok","Kain samping tenunan & songkok",{s:"P",st:1,cost:150}),t2("Jam tangan","Watch",{s:"P",st:0,cost:0}),
+  t2("Kuih penyaram & kuih cincin","Kuih penyaram & kuih cincin",{s:"P",st:0,cost:0}),t2("Kelupis","Kelupis",{s:"P",st:0,cost:0}),t2("Buah-buahan","Fruit tray",{s:"P",st:0,cost:0})],
+ guests:[
+  {id:uid(),name:"Keluarga Awg Hj Osman",s:"P",pax:6,r:1},{id:uid(),name:"Keluarga Pg Hj Rahim",s:"L",pax:5,r:1},
+  {id:uid(),name:"Rakan sekerja Aisyah",s:"P",pax:12,r:0},{id:uid(),name:"Jiran Kampong Mentiri",s:"P",pax:20,r:1},
+  {id:uid(),name:"Jemaah surau kampong",s:"L",pax:15,r:0},{id:uid(),name:"Kawan sekolah Haziq",s:"L",pax:8,r:0},
+  {id:uid(),name:"Keluarga Dyg Hjh Salmah",s:"L",pax:4,r:2}]
+}}
+let S; try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!S||!S.tasks)S=sample();
+let tab=0,confirming=false,msg="";
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const L=()=>T[S.lang];
+const tx=o=>o.custom?o.bm:(o[S.lang]||o.bm);
+const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const bnd=n=>"B$"+Math.round(n||0).toLocaleString("en");
+const $=s=>document.querySelector(s);
+
+function header(){
+ const l=L();
+ $("#eyebrow").textContent=l.eyebrow;
+ $("#couple").innerHTML=`${esc(S.bride||"…")} <span class="amp">&amp;</span> ${esc(S.groom||"…")}`;
+ document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===S.lang));
+ document.documentElement.lang=S.lang==="bm"?"ms":"en";
+ let d="",lab=l.nodate;
+ if(S.date){const dt=new Date(S.date+"T00:00:00");const n=Math.round((dt-new Date(new Date().toDateString()))/864e5);
+  const ds=dt.toLocaleDateString(S.lang==="bm"?"ms-BN":"en-GB",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  if(n>0){d=n;lab=`${l.daysTo} · ${ds}`}else if(n===0){lab=l.today}else{lab=`${l.past} · ${ds}`}}
+ $("#days").textContent=d;$("#dayslabel").textContent=lab;
+ $("#tabs").innerHTML=l.tabs.map((n,i)=>`<button role="tab" id="tab-${i}" aria-selected="${i===tab}" data-tab="${i}">${n}</button>`).join("");
+}
+const sumB=k=>S.budget.reduce((a,b)=>a+(+b[k]||0),0);
+function sampleNote(){const l=L();if(!S.sample)return"";
+ return `<div class="note"><span>${l.sample}</span>${confirming?`<span class="confirm"><b>${l.sure}</b><button class="btn" data-act="wipe">${l.yes}</button><button class="btn ghost" data-act="cancel">${l.no}</button></span>`:`<button class="btn ghost" data-act="ask">${l.clear}</button>`}</div>`}
+
+function vOverview(){
+ const l=L(),done=S.tasks.filter(x=>x.done).length,spent=sumB("actual"),pct=S.total?spent/S.total*100:0;
+ const g=S.guests.filter(x=>x.r===1).reduce((a,x)=>a+(+x.pax||0),0),gt=S.guests.reduce((a,x)=>a+(+x.pax||0),0);
+ const next=S.tasks.filter(x=>!x.done).slice(0,4);
+ return `${sampleNote()}
+ <button class="btn dashbtn" data-act="dash">${l.genDash}</button>
+ <div class="stats">
+  <div class="stat"><b>${done}/${S.tasks.length}</b><span>${l.tasks}</span><div class="bar"><i style="width:${S.tasks.length?done/S.tasks.length*100:0}%"></i></div></div>
+  <div class="stat"><b class="money">${bnd(spent)}</b><span>${l.budget} · ${l.of} ${bnd(S.total)}</span><div class="bar"><i class="${pct>100?"over":""}" style="width:${Math.min(pct,100)}%"></i></div></div>
+  <div class="stat"><b>${g}</b><span>${l.guests} · ${l.of} ${gt}</span><div class="bar"><i style="width:${gt?g/gt*100:0}%"></i></div></div>
+ </div>
+ <section class="panel"><h3>${l.next}</h3><div class="list">${next.length?next.map(taskRow).join(""):`<p class="muted">${l.allDone}</p>`}</div></section>
+ <section class="panel"><h3>${l.details}</h3><div class="fields">
+  <label>${l.bride}<input type="text" id="f-bride" data-f="bride" value="${esc(S.bride)}"></label>
+  <label>${l.groom}<input type="text" id="f-groom" data-f="groom" value="${esc(S.groom)}"></label>
+  <label>${l.date}<input type="date" id="f-date" data-f="date" value="${esc(S.date)}"></label>
+  <label>${l.venue}<input type="text" id="f-venue" data-f="venue" value="${esc(S.venue)}"></label>
+  <label>${l.kadi}<input type="text" id="f-kadi" data-f="kadi" value="${esc(S.kadi)}"></label>
+  <label>${l.kadiTel}<input type="tel" inputmode="tel" id="f-kadiTel" data-f="kadiTel" value="${esc(S.kadiTel)}"></label>
+ </div>${/\d{5,}/.test((S.kadiTel||"").replace(/\D/g,""))?`<div class="add"><a class="btn" href="tel:${esc(S.kadiTel.replace(/[^\d+]/g,""))}">${l.call} ${esc(S.kadi||"")}</a><button class="btn ghost" data-act="copytel">${l.copy}</button></div>`:""}</section>
+ <section class="panel"><h3>${l.backup}</h3><p class="muted" style="margin:0 0 10px">${l.backupHelp}</p>
+  <div class="add" style="margin:0"><button class="btn ghost" data-act="dl">${l.download}</button><label class="btn ghost" style="cursor:pointer">${l.fromFile}<input type="file" id="file-in" accept=".json,application/json,text/plain" hidden></label></div>
+  ${msg?`<p class="muted" style="margin:8px 0 0" role="status">${esc(msg)}</p>`:""}</section>
+ ${S.sample?"":`<div class="confirm">${confirming?`<b>${l.sure}</b><button class="btn" data-act="wipe">${l.yes}</button><button class="btn ghost" data-act="cancel">${l.no}</button>`:`<button class="btn ghost" data-act="ask">${l.reset}</button>`}</div>`}`;
+}
+function taskRow(x){return `<div class="row ${x.done?"done":""}"><button class="chk" aria-pressed="${x.done}" aria-label="done" data-act="tog" data-id="${x.id}">✓</button><span class="grow">${esc(tx(x))}</span><button class="x" aria-label="remove" data-act="deltask" data-id="${x.id}">×</button></div>`}
+function vTasks(){
+ const l=L();
+ return sampleNote()+`<p class="muted" style="margin:0">${l.adat}</p>`+PHASES.map(([k,n])=>{const items=S.tasks.filter(x=>x.ph===k);if(!items.length)return"";const d=items.filter(x=>x.done).length;
+  return `<section class="panel"><div class="phase"><h2>${n[S.lang]}</h2><small>${d}/${items.length}</small></div><div class="list">${items.map(taskRow).join("")}</div></section>`}).join("")+
+ `<section class="panel"><h3>${l.addTask}</h3><div class="add"><input type="text" id="new-task" placeholder="${l.addTask}…"><select id="new-phase" aria-label="${l.phase}">${PHASES.map(([k,n])=>`<option value="${k}">${n[S.lang]}</option>`).join("")}</select><button class="btn" data-act="addtask">${l.add}</button></div></section>`;
+}
+function vBudget(){
+ const l=L(),p=sumB("plan"),a=sumB("actual"),left=S.total-a;
+ return `${sampleNote()}<section class="panel"><div class="fields"><label class="full">${l.total} (B$)<input type="number" inputmode="numeric" id="f-total" data-f="total" value="${S.total}"></label></div>
+ <div class="bar" style="height:10px"><i class="${a>S.total?"over":""}" style="width:${S.total?Math.min(a/S.total*100,100):0}%"></i></div>
+ <p class="muted" style="margin:6px 0 0">${left>=0?`${l.left}: <b class="money">${bnd(left)}</b>`:`<b style="color:var(--warn)">${l.over}: ${bnd(-left)}</b>`}</p></section>
+ <section class="panel"><div class="row" style="font-size:13px;color:var(--muted);font-weight:700"><span class="grow">${l.item}</span><span class="num">${l.plan}</span><span class="num">${l.actual}</span><span style="width:32px"></span></div>
+ ${S.budget.map(b=>`<div class="row"><span class="grow">${esc(tx(b))}</span><input class="num" type="number" inputmode="numeric" id="bp-${b.id}" aria-label="${l.plan}" data-b="${b.id}" data-k="plan" value="${b.plan||0}"><input class="num" type="number" inputmode="numeric" id="ba-${b.id}" aria-label="${l.actual}" data-b="${b.id}" data-k="actual" value="${b.actual||0}"><button class="x" aria-label="remove" data-act="delb" data-id="${b.id}">×</button></div>`).join("")}
+ <div class="tot"><span>${l.sum}</span><span class="money">${bnd(p)} · ${bnd(a)}</span></div>
+ <div class="add"><input type="text" id="new-b" placeholder="${l.addItem}…"><button class="btn" data-act="addb">${l.add}</button></div></section>`;
+}
+function vHantaran(){
+ const l=L();
+ const grp=(s,title)=>{const it=S.hantaran.filter(h=>h.s===s);const c=it.reduce((a,h)=>a+(+h.cost||0),0);
+  return `<section class="panel"><div class="phase"><h2>${title}</h2><small>${it.length} ${l.trays} · ${bnd(c)}</small></div><div class="list">
+  ${it.map(h=>`<div class="row"><button class="pill p${h.st}" data-act="st" data-id="${h.id}">${l.st[h.st]}</button><span class="grow">${esc(tx(h))}</span><input class="num" type="number" inputmode="numeric" id="hc-${h.id}" aria-label="${l.cost}" data-h="${h.id}" value="${h.cost||0}"><button class="x" aria-label="remove" data-act="delh" data-id="${h.id}">×</button></div>`).join("")}
+  </div><div class="add"><input type="text" id="new-h-${s}" placeholder="${l.addItem}…"><button class="btn" data-act="addh" data-s="${s}">${l.add}</button></div></section>`};
+ return sampleNote()+`<p class="muted" style="margin:0">${l.berianNote}</p>`+grp("L",l.fromM)+grp("P",l.fromF);
+}
+function vGuests(){
+ const l=L(),sum=f=>S.guests.filter(f).reduce((a,x)=>a+(+x.pax||0),0);
+ return `${sampleNote()}<div class="stats"><div class="stat"><b>${sum(x=>x.r===1)}</b><span>${l.confirmed}</span></div><div class="stat"><b>${sum(x=>x.r===0)}</b><span>${l.pending}</span></div><div class="stat"><b>${sum(x=>x.r!==2)}</b><span>${l.heads}</span></div></div>
+ <section class="panel"><p class="muted" style="margin:0 0 6px">${l.sideL} = ${l.sideLf} · ${l.sideP} = ${l.sidePf}</p><div class="list">
+ ${S.guests.map(g=>`<div class="row"><span class="side">${g.s==="L"?l.sideL:l.sideP}</span><span class="grow">${esc(g.name)}</span><input class="num" style="width:60px" type="number" inputmode="numeric" id="gp-${g.id}" aria-label="${l.pax}" data-g="${g.id}" value="${g.pax}"><button class="pill ${["p1","p2","p3"][g.r]}" data-act="rsvp" data-id="${g.id}">${l.rsvp[g.r]}</button><button class="x" aria-label="remove" data-act="delg" data-id="${g.id}">×</button></div>`).join("")}
+ </div><div class="add"><input type="text" id="new-g" placeholder="${l.gName}"><input type="number" inputmode="numeric" id="new-gp" class="num" style="width:64px" placeholder="${l.pax}" value="2"><select id="new-gs" aria-label="side"><option value="L">${l.sideLf}</option><option value="P">${l.sidePf}</option></select><button class="btn" data-act="addg">${l.add}</button></div></section>`;
+}
+function dashHTML(){
+ const l=L(),pct=(a,b)=>b?Math.round(a/b*100):0,sum=(arr,f)=>arr.reduce((a,x)=>a+(+f(x)||0),0);
+ const done=S.tasks.filter(x=>x.done).length,spent=sumB("actual");
+ const gExp=sum(S.guests.filter(g=>g.r!==2),g=>g.pax),gYes=sum(S.guests.filter(g=>g.r===1),g=>g.pax);
+ const tr=S.hantaran.filter(h=>h.s==="L"),trR=tr.filter(h=>h.st===2).length;
+ const now=new Date(),loc=S.lang==="bm"?"ms-BN":"en-GB";
+ let dline="";if(S.date){const dt=new Date(S.date+"T00:00:00"),n=Math.round((dt-new Date(now.toDateString()))/864e5);
+  dline=`<span><b>${esc(dt.toLocaleDateString(loc,{weekday:"long",day:"numeric",month:"long",year:"numeric"}))}</b>${n>0?` · ${n} ${l.daysLeft}`:""}</span>`}
+ const max=Math.max(1,...S.budget.map(b=>Math.max(+b.plan||0,+b.actual||0)));
+ const budget=S.budget.map(b=>{const p=+b.plan||0,a=+b.actual||0,over=a>p&&p>0;
+  return `<div class="br" title="${esc(tx(b))}: ${bnd(a)} / ${bnd(p)}"><span>${esc(tx(b))}</span><div class="tr" style="width:${Math.max(p,a)/max*100}%"><i class="${over?"over":""}" style="width:${Math.max(p,a)?Math.min(a,Math.max(p,a))/Math.max(p,a)*100:0}%"></i></div><span class="v">${bnd(a)} / ${bnd(p)}${over?` · ${l.overBy}`:""}</span></div>`}).join("");
+ const phases=PHASES.map(([k,n])=>{const it=S.tasks.filter(x=>x.ph===k);if(!it.length)return"";const d=it.filter(x=>x.done).length;
+  return `<div class="br" title="${esc(n[S.lang])}: ${d}/${it.length}"><span>${esc(n[S.lang])}</span><div class="pl"><i style="width:${pct(d,it.length)}%"></i></div><span class="v">${d}/${it.length}</span></div>`}).join("");
+ const C3=["var(--green)","var(--gold)","var(--red)"];
+ const stack=(label,parts,names,C=C3)=>{const t=parts.reduce((a,b)=>a+b,0);
+  return `<div class="br" title="${esc(label)}: ${parts.map((p,i)=>names[i]+" "+p).join(", ")}"><span>${esc(label)}</span><div class="stk">${t?parts.map((p,i)=>p?`<i style="flex:${p};background:${C[i]}"></i>`:"").join(""):`<i style="flex:1;background:var(--grey)"></i>`}</div><span class="v">${parts.join(" · ")}</span></div>`};
+ const gNames=[l.rsvp[1],l.rsvp[0],l.rsvp[2]];
+ const gRow=s=>stack(s==="L"?l.sideLf:l.sidePf,[1,0,2].map(r=>sum(S.guests.filter(g=>g.s===s&&g.r===r),g=>g.pax)),gNames);
+ const bNames=[l.st[2],l.st[1],l.st[0]],CB=["var(--green)","var(--gold)","var(--grey)"];
+ const bRow=s=>stack(s==="L"?l.fromM:l.fromF,[2,1,0].map(st=>S.hantaran.filter(h=>h.s===s&&h.st===st).length),bNames,CB);
+ const legend=(names,C=C3)=>`<div class="lg">${names.map((n,i)=>`<span><i style="background:${C[i]}"></i>${esc(n)}</span>`).join("")}</div>`;
+ const next=S.tasks.filter(x=>!x.done).slice(0,6);
+ return `<div class="dash"><div class="dh"><div class="dk">${l.dashTitle} · ${l.generated} ${esc(now.toLocaleDateString(loc,{day:"numeric",month:"long",year:"numeric"}))}</div>
+ <h1>${esc(S.bride||"…")} <span>&amp;</span> ${esc(S.groom||"…")}</h1>
+ <div class="meta">${dline}${S.venue?`<span>${l.venueL}: <b>${esc(S.venue)}</b></span>`:""}${S.kadi?`<span>${l.kadiL}: <b>${esc(S.kadi)}</b>${S.kadiTel?` · ${esc(S.kadiTel)}`:""}</span>`:""}</div></div>
+ <div class="kpis">
+  <div class="kpi"><b>${pct(done,S.tasks.length)}%</b><span>${l.tasks} · ${done}/${S.tasks.length}</span></div>
+  <div class="kpi"><b>${bnd(spent)}</b><span>${l.budget} · ${l.of} ${bnd(S.total)} (${pct(spent,S.total)}%)</span></div>
+  <div class="kpi"><b>${gExp}</b><span>${l.guestsExp} · ${gYes} ${l.confirmed}</span></div>
+  <div class="kpi"><b>${trR}/${tr.length}</b><span>${l.berianReady}</span></div></div>
+ <div class="grid">
+  <section class="wide"><h2>${l.byItem}</h2><p class="sub">${l.byItemSub}</p>${budget}</section>
+  <section><h2>${l.byPhase}</h2>${phases}</section>
+  <section><h2>${l.nextUp}</h2>${next.length?`<ol>${next.map(x=>`<li>${esc(tx(x))}</li>`).join("")}</ol>`:`<p>${l.allDone}</p>`}</section>
+  <section><h2>${l.bySide}</h2>${legend(gNames)}${gRow("L")}${gRow("P")}</section>
+  <section><h2>${l.berianSt}</h2>${legend(bNames,CB)}${bRow("L")}${bRow("P")}</section>
+ </div><div class="ft">${l.footer}</div></div>`;
+}
+function openDash(){const l=L();$("#dashClose").textContent=l.close;$("#dashDl").textContent=l.dlDash;$("#dashBody").innerHTML=dashHTML();$("#overlay").hidden=false;$("#overlay").scrollTop=0}
+function dlDash(){
+ const css=[...document.querySelectorAll("style")].map(x=>x.textContent).join("").match(/\.dash[^{]*\{[^}]*\}|@media\(max-width:700px\)\{\.dash[^@]*?\}\}/g).join("\n");
+ const html=`<!DOCTYPE html><html lang="${S.lang==="bm"?"ms":"en"}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(L().dashTitle)} · ${esc(S.bride)} & ${esc(S.groom)}</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Marcellus&family=Mulish:wght@400;600;700&display=swap"><style>body{margin:0;background:#fff}${css}</style></head><body>${dashHTML()}</body></html>`;
+ saveFile("raja-sehari-dashboard-"+new Date().toISOString().slice(0,10)+".html",html).then(()=>{},()=>{});
+}
+function render(){header();$("#view").innerHTML=[vOverview,vTasks,vBudget,vHantaran,vGuests][tab]();}
+const find=(arr,id)=>arr.find(x=>x.id===id);
+async function saveFile(name,text){
+ if(window.claude&&typeof window.claude.use==="function"){
+  const dl=await window.claude.use("downloads");
+  if(dl){await dl.save({filename:name,data:text});return}
+ }
+ const b=new Blob([text],{type:name.endsWith(".html")?"text/html":"application/json"}),a=document.createElement("a");
+ a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();
+ setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);
+}
+function download(){
+ const day=new Date().toISOString().slice(0,10);
+ saveFile("raja-sehari-sandaran-"+day+".json",JSON.stringify({app:"raja-sehari",saved:day,data:S},null,1))
+  .then(()=>{msg=L().dlDone;render()},e=>{if(!e||e.code!=="declined"){msg=L().importBad;render()}});
+}
+function restore(txt){
+ try{const j=JSON.parse(txt),d=j.data||j;
+  if(!d||!Array.isArray(d.tasks)||!Array.isArray(d.budget)||!Array.isArray(d.hantaran)||!Array.isArray(d.guests))throw 0;
+  S={lang:d.lang==="en"?"en":"bm",sample:!!d.sample,bride:String(d.bride||""),groom:String(d.groom||""),date:/^\d{4}-\d\d-\d\d$/.test(d.date)?d.date:"",venue:String(d.venue||""),kadi:String(d.kadi||""),kadiTel:String(d.kadiTel||""),
+   total:+d.total||0,tasks:d.tasks,budget:d.budget,hantaran:d.hantaran,guests:d.guests};
+  save();msg=L().importOk}catch(e){msg=L().importBad}
+ render();
+}
+document.addEventListener("click",e=>{
+ const b=e.target.closest("button");if(!b)return;
+ if(b.dataset.lang){S.lang=b.dataset.lang;save();render();return}
+ if(b.dataset.tab){tab=+b.dataset.tab;confirming=false;msg="";render();window.scrollTo({top:0});return}
+ const a=b.dataset.act,id=b.dataset.id;if(!a)return;
+ const val=s=>{const el=$(s);const v=el.value.trim();el.value="";return v};
+ switch(a){
+  case"ask":confirming=true;break; case"cancel":confirming=false;break;
+  case"dl":download();return;
+  case"dash":openDash();return;
+  case"closedash":$("#overlay").hidden=true;return;
+  case"dldash":dlDash();return;
+  case"copytel":{const n=S.kadiTel||"";try{navigator.clipboard.writeText(n).then(()=>{msg=L().copied;render()},()=>{})}catch(e){}return}
+  case"wipe":S={lang:S.lang,sample:false,bride:"",groom:"",date:"",venue:"",kadi:"",kadiTel:"",tasks:taskTemplate().map(x=>({...x,done:false})),total:0,
+    budget:budgetTemplate().map(x=>({...x,plan:0,actual:0})),hantaran:[],guests:[]};confirming=false;break;
+  case"tog":{const x=find(S.tasks,id);x.done=!x.done;break}
+  case"deltask":S.tasks=S.tasks.filter(x=>x.id!==id);break;
+  case"addtask":{const v=val("#new-task");if(v)S.tasks.push({id:uid(),bm:v,custom:true,ph:$("#new-phase").value,done:false});break}
+  case"delb":S.budget=S.budget.filter(x=>x.id!==id);break;
+  case"addb":{const v=val("#new-b");if(v)S.budget.push({id:uid(),bm:v,custom:true,plan:0,actual:0});break}
+  case"st":{const h=find(S.hantaran,id);h.st=(h.st+1)%3;break}
+  case"delh":S.hantaran=S.hantaran.filter(x=>x.id!==id);break;
+  case"addh":{const v=val("#new-h-"+b.dataset.s);if(v)S.hantaran.push({id:uid(),bm:v,custom:true,s:b.dataset.s,st:0,cost:0});break}
+  case"rsvp":{const g=find(S.guests,id);g.r=(g.r+1)%3;break}
+  case"delg":S.guests=S.guests.filter(x=>x.id!==id);break;
+  case"addg":{const v=val("#new-g");if(v)S.guests.push({id:uid(),name:v,pax:+$("#new-gp").value||1,s:$("#new-gs").value,r:0});break}
+ }
+ save();render();
+});
+document.addEventListener("change",e=>{
+ const el=e.target,d=el.dataset;
+ if(el.id==="file-in"){const f=el.files[0];if(f)f.text().then(restore,()=>{msg=L().importBad;render()});return}
+ if(d.f){S[d.f]=d.f==="total"?(+el.value||0):el.value}
+ else if(d.b){find(S.budget,d.b)[d.k]=+el.value||0}
+ else if(d.h){find(S.hantaran,d.h).cost=+el.value||0}
+ else if(d.g){find(S.guests,d.g).pax=+el.value||0}
+ else return;
+ save();render();
+});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#overlay").hidden){$("#overlay").hidden=true;return}if(e.key!=="Enter"||e.target.tagName!=="INPUT"||e.target.type!=="text"||e.target.dataset.f)return;
+ const btn=e.target.parentElement.querySelector("[data-act^=add]");if(btn)btn.click();});
+render();
+}
+</script>
+</body>
+</html>

@@ -47,6 +47,20 @@ Track subscriptions, bills, fees, takaful and instalments in B$, in Bahasa Melay
 - Quick picks for common services (Netflix, Astro, imagine, DST, Progresif, cukai jalan and more)
 - Your data stays on your own phone. Use **Sandaran data** to copy a backup.
 
+## Raja Sehari Planner
+
+A wedding planner for Brunei Malay weddings, in Bahasa Melayu or English.
+
+**Open:** https://randombruneian.github.io/apps/kahwin/
+
+- Countdown to the akad nikah, with the appointed kadi's name and phone number
+- Preparations by stage, from berjarum-jarum and bertunang to menghantar berian, berbedak, berinai, bersanding, ambil-ambilan and muleh tiga hari
+- Budget in B$, berian trays for both sides, and a guest list with RSVPs
+- **Jana dashboard** makes a one-page summary you can download and share
+- Your data stays on your own phone. Use **Sandaran data** to download a backup file.
+
+Customs differ by district and family, so add or remove preparations to match your own adat.
+
 ## Add to your Home Screen
 
 **iPhone:** open the link in Safari, tap Share, then tap **Add to Home Screen**.

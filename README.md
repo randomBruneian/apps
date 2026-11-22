@@ -4,7 +4,7 @@
 
 Small web apps for Brunei Darussalam that you can add to your phone's Home Screen. They open full screen like a normal app, with nothing to download from the App Store.
 
-**All apps:** https://michelanjelou-droid.github.io/apps/
+**All apps:** https://randombruneian.github.io/apps/
 
 > **Disclaimer:** This is an unofficial, personal project. It is not an official government app and is not affiliated with or endorsed by Kementerian Hal Ehwal Ugama or any Brunei government agency. Prayer times are taken from KHEU's published Taqwim. If anything differs, the official Taqwim and announcements from KHEU take precedence.
 
@@ -12,7 +12,7 @@ Small web apps for Brunei Darussalam that you can add to your phone's Home Scree
 
 Prayer times for Brunei with a countdown to the next prayer.
 
-**Open:** https://michelanjelou-droid.github.io/apps/solat/
+**Open:** https://randombruneian.github.io/apps/solat/
 
 - All eight times each day: Imsak, Suboh, Syuruk, Doha, Zuhor, Asar, Maghrib, Isyak
 - District adjustment: Brunei-Muara and Temburong as published, Tutong +1 minute, Belait +3 minutes
@@ -31,7 +31,7 @@ To check the official times, see the [KHEU prayer times page](https://www.mora.g
 
 A quiet wall clock for Bandar Seri Begawan. It has rolling seconds, the moon phase, and sunrise and sunset times. The river skyline, with the Omar Ali Saifuddien Mosque and Kampong Ayer, changes from night to day with the real time.
 
-**Open:** https://michelanjelou-droid.github.io/apps/clock/
+**Open:** https://randombruneian.github.io/apps/clock/
 
 Tap **Keep screen on** to use it as a desk or bedside clock.
 
@@ -39,7 +39,7 @@ Tap **Keep screen on** to use it as a desk or bedside clock.
 
 Track subscriptions, bills, fees, takaful and instalments in B$, in Bahasa Melayu or English.
 
-**Open:** https://michelanjelou-droid.github.io/apps/bil/
+**Open:** https://randombruneian.github.io/apps/bil/
 
 - Monthly and yearly totals, split by type
 - What's due in the next 30 days; tap **Dah bayar** to move it to the next due date

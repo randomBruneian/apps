@@ -351,9 +351,11 @@ function doImport(txt){try{const d=JSON.parse(txt);const a=Array.isArray(d)?d:d.
  render();toast(t('importOk'),()=>restore(prev))}catch(e){toast(t('importBad'))}}
 $('impBtn').onclick=()=>doImport($('imp').value);
 $('fileIn').onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(doImport,()=>toast(t('importBad')));e.target.value=''};
-$('dlBtn').onclick=()=>{try{const b=new Blob([JSON.stringify({app:'bil',saved:iso(todayD()),items,log},null,1)],{type:'application/json'});
- const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='bil-sandaran-'+iso(todayD())+'.json';document.body.appendChild(a);a.click();
- setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000);toast(t('dlDone'))}catch(e){toast(t('importBad'))}};
+$('dlBtn').onclick=async()=>{const name='bil-sandaran-'+iso(todayD())+'.json',text=JSON.stringify({app:'bil',saved:iso(todayD()),items,log},null,1);
+ try{let dl=null;if(window.claude&&typeof window.claude.use==='function')dl=await window.claude.use('downloads');
+  if(dl)await dl.save({filename:name,data:text});
+  else{const b=new Blob([text],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
+  toast(t('dlDone'))}catch(e){if(!e||e.code!=='declined')toast(t('importBad'))}};
 new MutationObserver(render).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',render);
 texts();render();
